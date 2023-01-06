@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+ <div style="text-align:center;" >
+     <h2>Registration Form</h2>
+     <form method="post">
+         {% csrf_token %}
+         {{form.as_p}}
+         <button type="submit">Submit</button>
+     </form><br>
+     <div>
+         <a href="login" style="text-decoration:none;color:black;" > ---Or Login With---</a>
+     </div>
+ </div>
+
+{% endblock %}
