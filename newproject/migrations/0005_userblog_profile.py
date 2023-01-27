@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('topic', models.CharField(max_length=100)),
                 ('caption', models.CharField(max_length=100)),
-                ('image', models.ImageField(upload_to='blogimg')),
+                ('image', models.ImageField(upload_to='images')),
                 ('blog_data', models.CharField(max_length=1000)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('updated_date', models.DateTimeField(null=True)),

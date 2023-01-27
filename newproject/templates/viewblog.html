@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form action="create" method="post">
+<form action="view" method="post">
     {% csrf_token %}
 
     {% load static %}
@@ -24,7 +24,7 @@
                     <a class="nav-link scrollto " href="create">Create Blog</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link scrollto " href="myblog">View Blog</a>
+                    <a class="nav-link scrollto " href="view">View Blog</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -32,6 +32,7 @@
                     <img src="{% static 'logo.jpg' %}" style="height:20px;width:30px" class="img-responsive2 rounded-pill">
                     </a>
                     <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="userprofile">Create Profile</a></li>
                         <li><a class="dropdown-item" href="#">View Profile</a></li>
                         <li><a class="dropdown-item" href="#">Upload Profile Pic</a></li>
                         <li><a class="dropdown-item" href="#">Edit Profile</a></li>
@@ -47,9 +48,9 @@
     <div class="row">
 
     {% for i in vlog %}
-    <div class="col">
+    <div class="col-lg-4">
         <div class="card">
-            <img src="{{i.image}}" class="card-img-top" style="height:200px;width:150px";>
+            <img src="/media/{{i.image}}" class="card-img-top" style="height:200px;width:150px";>
             <div class="card-body" style="height:300px;text-align:justify">
                 <div>
                     <span class="float-start badge rounded-pill bg-info"> Topic: {{i.topic}}</span>
@@ -70,6 +71,5 @@
     {% endfor %}
 
      </div>
-
 </body>
 </html>

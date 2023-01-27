@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template import loader, context
 
-from newproject.form import RegisterForm, UserImageForm
+from newproject import form
+from newproject.form import RegisterForm, UserBlogForm, UserImageForm
 import requests
 
 from newproject.models import UserBlog
@@ -36,7 +37,7 @@ def userlogin(request):
         if user is not None:
             login(request,user)
             print(request.user.username)
-            return redirect(MyBlog)
+            return redirect(ViewBlog)
         else:
             return redirect(userlogin)
             return HttpResponse('Invalid username or password')
@@ -78,14 +79,14 @@ def ResetPassword(request):
 
     return render(request, 'resetpass.html')
 
-def MyBlog(request):
+def ViewBlog(request):
     vlog = UserBlog.objects.all()
-    return render(request,'blog.html',{'vlog':vlog})
+    return render(request,'viewblog.html',{'vlog':vlog})
 
-def images(request):
-  template = loader.get_template('createblog.html')
-
-  return HttpResponse(template.render(context, request))
+# def images(request):
+#   template = loader.get_template('createblog.html')
+#
+#   return HttpResponse(template.render(context, request))
 
 def image_request(request):
     form = UserImageForm()
@@ -93,31 +94,24 @@ def image_request(request):
         form = UserImageForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-
             img_object = form.instance
-            return render(request, 'imgform.html', {'form': form, 'img_obj': img_object})
+            return render(request, 'createblog.html', {'form': form, 'img_obj': img_object})
+    return render(request, 'createblog.html', {'form': form})
 
-    return render(request, 'imgform.html', {'form': form})
-
-def Fetch(request):
-    fetch = UserBlog.objects.all()
-    return render(request,"blog.html", {"fetch":fetch})
-
-def Create(request):
+def CreateBlog(request):
     if request.method == "POST":
-        topic = request.POST['topc']
+        topic = request.POST['topic']
         title = request.POST['title']
-        image = request.POST['img']
         blog_content = request.POST['content']
-        datas = UserBlog.objects.create(topic=topic,caption=title,image=image,blog_data=blog_content,user_id=request.user.id)
-        datas.save()
-        return redirect(MyBlog)
-    return render(request, "createblog.html", {'datas':data})
+        obj = UserBlog.objects.create(topic=topic,caption=title,blog_data=blog_content)
+        obj.save()
+        return redirect('ViewBlog')
+    return render(request, "createblog.html", {'obj': object})
 
 def Delete(request,id):
     datas = UserBlog.objects.get(id=id)
     datas.delete()
-    return redirect(MyBlog)
+    return redirect(ViewBlog)
 
 def update(request,id):
     datas = UserBlog.objects.get(id=id)
@@ -126,5 +120,20 @@ def update(request,id):
     datas.blog_data = request.POST['content']
     datas.save()
     return render(request, 'update.html',{'datas':datas})
+
+def UserProfile(request):
+    if request.method == "POST":
+        firstname = request.POST['fname']
+        lastname = request.POST['lname']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        dob = request.POST['dob']
+        address = request.POST['addr']
+        city = request.POST['city']
+        obj = UserBlog.objects.create(firstname=firstname,lastname=lastname,email=email,phone=phone,DOB=dob,address=address,
+                                      city=city)
+        obj.save()
+    return render(request, "userprofile.html", {'obj': object})
+
 
 

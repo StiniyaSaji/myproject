@@ -9,11 +9,11 @@ urlpatterns = [
     path('login',views.userlogin),
     path('verify',views.VerifyOTP),
     path('reset',views.ResetPassword),
-    path('myblog',views.MyBlog),
-    # path('images',views.images),
-    path('upload',views.image_request),
-    path('create',views.Create),
+    path('view',views.ViewBlog),
+    path('create',views.image_request),
+    path('create',views.CreateBlog),
     path('delete/<int:id>',views.Delete),
     path('update/<int:id>',views.update),
+    path('userprofile',views.UserProfile),
 
 ]

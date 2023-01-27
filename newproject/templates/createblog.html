@@ -7,20 +7,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-
-    <form method="POST" class="post-form" enctype="multipart/form-data">
+    <form method="POST" action="create" class="post-form" enctype="multipart/form-data">
            {% csrf_token %}
+
         <div class="container mt-5">
             <h2>Create BLog</h2><hr><br>
-            <label for="topc">Topic</label>
-            <input type="text" id="topc" name="topc">
+            <label for="topic">Topic</label>
+            <input type="text" id="topic" name="topic">
             <label for="title">Blog Title</label>
             <input type="text" id="title" name="title">
             <br><br>
             <div>
-                <form action="/action_page.php">
-                    <label for="img">Upload Image</label>
-                    <input type="file" id="img" name="img">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
                 </form>
             </div><br>
 
@@ -28,11 +28,10 @@
                 <label for="content">Blog Content</label>
                 <textarea type="text" class="form-control" rows="10" id="content" name="content"></textarea>
             </div><br>
-            <label for="update">Updated Date</label>
-            <input type="text" id="update" name="update">
+
             <button type="submit" class="btn btn-primary">Create Blog</button>
         </div>
-    </form>
+
 
 </body>
 </html>
