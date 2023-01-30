@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-
-<form action="view" method="post">
+  <form action="viewpro" method="post">
     {% csrf_token %}
 
     {% load static %}
@@ -33,7 +30,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="createpro">Create Profile</a></li>
-                        <li><a class="dropdown-item" href="#">View Profile</a></li>
+                        <li><a class="dropdown-item" href="viewpro">View Profile</a></li>
                         <li><a class="dropdown-item" href="#">Upload Profile Pic</a></li>
                         <li><a class="dropdown-item" href="#">Edit Profile</a></li>
                         <li><a class="dropdown-item" href="#">Change Password</a></li>
@@ -47,29 +44,24 @@
 
     <div class="row">
 
-    {% for i in vlog %}
+    {% for i in data1 %}
     <div class="col-lg-4">
         <div class="card">
             <img src="/media/{{i.image}}" class="card-img-top" style="height:200px;width:150px";>
             <div class="card-body" style="height:300px;text-align:justify">
-                <div>
-                    <span class="float-start badge rounded-pill bg-info"> Topic: {{i.topic}}</span>
-                </div>
 
-                <h4 class="card-title">{{i.caption}}</h4>
-                <p class="card-text">{{ i.blog_data }} </p>
-
-                <div class="card-footer">
-                    <div class="btn-group">
-                        <button type="submit"><a href="update/{{ i.id }}">Update</a></button>
-                        <button type="submit"><a href="delete/{{ i.id }}">Delete</a></button>
-                    </div>
-                </div>
+                <h4 class="card-title">{{ i.fname }}</h4>
+                <p class="card-text">Email:{{ i.email }} </p>
+                <p class="card-text">Phone::{{ i.phone }} </p>
+                <p class="card-text">DOB:{{ i.dob }} </p>
+                <p class="card-text">Address:{{ i.addr}} </p>
+                <p class="card-text">City:{{ i.city }} </p>
             </div>
         </div>
     </div>
     {% endfor %}
 
      </div>
+
 </body>
 </html>

@@ -18,10 +18,7 @@
             <input type="text" id="title" name="title">
             <br><br>
             <div>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                </form>
+                 {{ form }}
             </div><br>
 
             <div style="width:45%">

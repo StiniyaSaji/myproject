@@ -18,4 +18,4 @@ class UserImageForm(forms.ModelForm):
 class UserBlogForm(forms.ModelForm):
     class Meta:
         model = UserBlog
-        fields = ('topic', 'caption', 'image', 'blog_data')
+        fields = ['image']
