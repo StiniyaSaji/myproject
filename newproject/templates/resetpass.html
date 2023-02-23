@@ -7,23 +7,28 @@
 <body>
 
 <div class="mt-5"></div>
- <div style="text-align:center;">
-     <form method="post">
-         {% csrf_token %}
-         <h2>Reset Password</h2>
-         <h4 >Verify the OTP sent to your mobile number and reset password.</h4>
+<div style="text-align:center;">
 
-         <input type="text" name="OTP" placeholder="Enter OTP"><br><br>
-         <input type="password" name="newpass" placeholder="New Password"><br><br>
-         <input type="password" name="confirmpass" placeholder="Confirm Password"><br><br><br>
+    <form method="post">
+        {% csrf_token %}
 
-         <button type="submit" class="save btn btn-default">Reset Password</button><br>
-     </form><br>
+        <h2>Reset Password</h2>
+        <h4 >Verify the OTP sent to your mobile number and reset password.</h4>
 
-     <div>
-         <a href="login" style="text-decoration:none;color:black;" > ---Or Request OTP---</a>
-     </div>
- </div>
+        <input id="OTP" class="form-control" type="text" name="OTP" placeholder="Enter OTP"><br><br>
+        <input id="newpass" class="form-control" type="text" name="newpass" placeholder="New Password"><br><br>
+        <input id="confirmpass" class="form-control" type="text" name="confirmpass" placeholder="Confirm Password"><br><br><br>
+
+        <div class="form-group">
+            <input type="submit" name="recover-submit" value="Reset Password" class= "btn btn-primary"><br>
+        </div>
+
+    </form><br>
+
+    <div>
+        <a href="/" style="text-decoration:none;color:black;" > ---Or Request OTP---</a>
+    </div>
+</div>
 
 </body>
 </html>

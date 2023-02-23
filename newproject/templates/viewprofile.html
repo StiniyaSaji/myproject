@@ -1,67 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-  <form action="viewpro" method="post">
-    {% csrf_token %}
+{% extends 'base.html'%}
+{% block body %}
 
-    {% load static %}
+   <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+    <div class="card p-4">
+         <div class=" image d-flex flex-column justify-content-center align-items-center">
+             <button class="btn btn-secondary">
+                  <img src="{{data1.profile_pic}}" height="100" width="100" />
+             </button>
+             <span class="name mt-3">{{data.first_name}} {{ data.last_name}}</span>
+             <span class="idd">Email: &nbsp;{{data.email}}</span>
+             <span class="idd">Phone: &nbsp;{{data1.phone}}</span>
+             <span class="idd">DOB: &nbsp;{{data1.DOB}}</span>
+             <span class="idd">Address:&nbsp; {{data1.address}}</span>
+             <span class="idd">City:&nbsp; {{data1.city}}</span>
 
-    <nav class="navbar navbar-expand navbar-dark nav bg-dark fixed-top">
-      <div class="container-fluid">
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link scrollto" href="#"><img  src="{% static 'cokonet.jpeg' %}" style="height: 20px; width: 30px" class="img-responsive2 rounded-pill" >Cokonet</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link scrollto " href="create">Create Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link scrollto " href="view">View Blog</a>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <img src="{% static 'logo.jpg' %}" style="height:20px;width:30px" class="img-responsive2 rounded-pill">
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="createpro">Create Profile</a></li>
-                        <li><a class="dropdown-item" href="viewpro">View Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Upload Profile Pic</a></li>
-                        <li><a class="dropdown-item" href="#">Edit Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Change Password</a></li>
-                        <li><a class="dropdown-item" href="logout">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-      </div>
-    </nav><br><br><br><br>
-
-    <div class="row">
-
-    {% for i in data1 %}
-    <div class="col-lg-4">
-        <div class="card">
-            <img src="/media/{{i.image}}" class="card-img-top" style="height:200px;width:150px";>
-            <div class="card-body" style="height:300px;text-align:justify">
-
-                <h4 class="card-title">{{ i.fname }}</h4>
-                <p class="card-text">Email:{{ i.email }} </p>
-                <p class="card-text">Phone::{{ i.phone }} </p>
-                <p class="card-text">DOB:{{ i.dob }} </p>
-                <p class="card-text">Address:{{ i.addr}} </p>
-                <p class="card-text">City:{{ i.city }} </p>
+             <div class=" d-flex mt-2">
+                 <button class="btn1 btn-dark"><a href="editpro">Edit Profile</a></button>
             </div>
-        </div>
-    </div>
-    {% endfor %}
 
-     </div>
+            <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+                <span><i class="fa fa-twitter"></i></span>
+                <span><i class="fa fa-facebook-f"></i></span>
+                <span><i class="fa fa-instagram"></i></span>
+                <span><i class="fa fa-linkedin"></i></span>
+            </div>
+            <div class=" px-2 rounded mt-4 date ">
+                <span class="join">Date Join: {{date_join}}</span>
+            </div>
+            </div>
+            </div>
+</div>
 
-</body>
-</html>
+{% endblock %}

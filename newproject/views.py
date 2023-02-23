@@ -1,16 +1,26 @@
 import datetime
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
-
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from newproject.form import RegisterForm, UserBlogForm, UserImageForm
+from newproject.form import RegisterForm
 import requests
-
 from newproject.models import UserBlog, Profile
+
+def home(request):
+    data = UserBlog.objects.all()
+    if request.method == 'POST':
+        topic = request.POST['search']
+        if topic == "":
+            return render(request,'dashboard.html',{"data":data})
+        else:
+            userdata = UserBlog.objects.filter(topic__contains=topic)
+            return render(request,'dashboard.html',{'userdata':userdata})
+    return render(request,'dashboard.html',{"data":data})
 
 def UserRegister(request):
     form = RegisterForm()
@@ -29,10 +39,10 @@ def Userlogin(request):
         if user is not None:
             login(request,user)
             print(request.user.username)
-            return redirect(ViewBlog)
+            return redirect(home)
         else:
             return redirect(Userlogin)
-            return HttpResponse('Invalid username or password')
+
     return render(request,'login.html')
 
 def Userlogout(request):
@@ -41,10 +51,10 @@ def Userlogout(request):
 
 def ForgotPassword(request):
     if request.method == "POST":
-        phone = request.POST['phone']
-        userdata = Profile.objects.get(phone=phone)
+        mobile = request.POST['phone']
+        userdata = Profile.objects.get(phone=mobile)
         if userdata:
-            url = 'https://2factor.in/API/V1/b866434b-7c4c-11ed-9158-0200cd936042/SMS/{}/AUTOGEN'.format(str(phone))
+            url = 'http://2factor.in/API/V1/b866434b-7c4c-11ed-9158-0200cd936042/SMS/{}/AUTOGEN'.format(str(mobile))
 
             payload = ""
             headers = {'content-type': 'application/x-www-form-urlencoded'}
@@ -53,14 +63,15 @@ def ForgotPassword(request):
 
             r = data['Details']
             request.session['Details'] = r
-            request.session['phone'] = phone
+            request.session['phone'] = mobile
 
             if data['Status'] == 'Success':
                 return redirect(ResetPassword)
         else:
-            return  redirect(ForgotPassword)
+            return redirect(ForgotPassword)
 
     return render(request,'forgotpass.html')
+
 
 def ResetPassword(request):
     if request.method == "POST":
@@ -80,19 +91,31 @@ def ResetPassword(request):
                 u = User.objects.get(username = data.username)
                 u.set_password(passwd)
                 u.save()
-
                 return redirect(Userlogin)
     return render(request, 'resetpass.html')
 
-# def image_request(request):
-#     form = UserImageForm()
-#     if request.method == 'POST':
-#         form = UserImageForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             img_object = form.instance
-#             return render(request, 'createblog.html', {'form': form, 'img_obj': img_object})
-#     return render(request, 'createblog.html', {'form': form})
+def Change_password(request):
+
+    if request.method == 'POST':
+        old_pass = request.POST['oldpass']
+        new_pass = request.POST['newpass']
+        cnf_pass = request.POST['cpass']
+        data = check_password(old_pass,request.user.password )
+        if data:
+            if new_pass == cnf_pass:
+                u = User.objects.get(username=request.user.username)
+                u.set_password(new_pass)
+                u.save()
+                print("password change successfully")
+
+            else:
+                print('password is not matching')
+                return redirect(Change_password)
+        else:
+            print('Enter the correct password')
+            return redirect(Change_password)
+
+    return render(request,'changepass.html')
 
 def upload_image(request):
     if request.method == "POST" and request.FILES['images']:
@@ -102,32 +125,34 @@ def upload_image(request):
         file_url = fss.url(file)
         Profile.objects.filter(user_id=request.user.id).update(profile_pic=file_url)
         return redirect(ViewProfile)
-    return render(request,'propic.html')
-
-def ViewBlog(request):
-    vlog = UserBlog.objects.all()
-    return render(request,'viewblog.html',{'vlog':vlog})
+    return render(request,'profilepic.html')
 
 def CreateBlog(request):
-    form = UserBlogForm()
     if request.method == "POST":
         topic = request.POST['topic']
         title = request.POST['title']
         blogcontent = request.POST['content']
+        upload = request.FILES['image']
+        fss = FileSystemStorage()
+        file = fss.save(upload.name, upload)
+        file_url = fss.url(file)
 
-        obj = UserBlog.objects.create(user_id_id=request.user.id,topic=topic,caption=title,blog_data=blogcontent,created_date=datetime.datetime.now())
-        obj.save()
-        form = UserBlogForm(request.FILES)
-        if form.is_valid():
-            form.save()
+        create_blog = UserBlog.objects.create(user_id=request.user.id, topic=topic, caption=title, image=file_url,
+                                              blog_data=blogcontent)
+        create_blog.save()
+        return redirect(ViewBlog)
+    return render(request, "createblog.html")
 
-            return redirect(ViewBlog)
-    return render(request, "createblog.html",{"form":form})
+def ViewBlog(request):
+    data = UserBlog.objects.filter(user_id=request.user.id)
+    if data:
+        return render(request, 'viewblog.html', {"data": data})
+    return render(request, 'viewblog.html')
 
-def DeleteBlog(request,id):
-    datas = UserBlog.objects.get(id=id)
-    datas.delete()
-    return redirect(ViewBlog)
+def View_details(requset,id):
+    data = UserBlog.objects.get(id=id)
+    return render(requset,"details.html",{"i":data})
+
 
 def UpdateBlog(request,id):
     data = UserBlog.objects.get(id=id)
@@ -135,16 +160,19 @@ def UpdateBlog(request,id):
         topic = request.POST['topc']
         title = request.POST['title']
         blogcontent = request.POST['content']
-
         upload = request.FILES['image']
         fss = FileSystemStorage()
         file = fss.save(upload.name, upload)
         file_url = fss.url(file)
-
-        UserBlog.objects.filter(id=id).update(topic=topic, caption=title, blog_data=blogcontent,
-                                image=file_url,updated_date=datetime.datetime.now())
+        UserBlog.objects.filter(id=id).update(topic=topic, caption=title,image=file_url, blog_data=blogcontent,
+                                              updated_date=datetime.datetime.now())
         return redirect(ViewBlog)
     return render(request, 'updateblog.html', {'i':data})
+
+def DeleteBlog(request,id):
+    datas = UserBlog.objects.get(id=id)
+    datas.delete()
+    return redirect(ViewBlog)
 
 def CreateProfile(request):
     data = User.objects.get(id = request.user.id)
@@ -181,4 +209,4 @@ def EditProfile(request):
         User.objects.filter(id=current_user.id).update(first_name=first_name,last_name=last_name,email=email)
         Profile.objects.filter(user_id=request.user.id, phone=phone, DOB=dob, address=address, city=city)
         return redirect(ViewProfile)
-    return render(request, 'editprofile.html', {'data': data,'data1':data1})
+    return render(request, 'editpro.html', {'data': data,'data1':data1})
